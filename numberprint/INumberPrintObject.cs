@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization;
 
-namespace numberprint
+namespace FizzBuzzter
 {
     /// <summary>
     /// Interface for objects that should be sent into Print Numbers constructor
@@ -14,6 +14,13 @@ namespace numberprint
     /// <para>Div5Msg:  the message it will print for numbers divisible by 5</para>
     /// <para>Data:  the list of data should be null on construction the GetData function will 
     /// fill out the "generic" object data array and return it to the caller</para>
+    /// <param/>
+    /// <param/>
+    /// <param>
+    /// not exactly sure how the customer wants to access the data so its serializable just in case...
+    /// may be more headache than its worth
+    /// </param>
+    /// 
     /// </summary>
     public interface INumberPrintObject : ISerializable
     {
@@ -23,5 +30,4 @@ namespace numberprint
         IList<object> Data { get; set; }
 
     }
-
 }

@@ -1,36 +1,39 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using numberprint;
-using Moq;
+using FizzBuzzter;
 using System.Collections.Generic;
 using System.Security.Permissions;
 using System.Runtime.Serialization;
 using System.Linq;
 
 
-namespace NubmerPrintTest {
+namespace NubmerPrintTest
+{
     [TestClass]
-    public class PrintNumbersTest {
+    public class PrintNumbersTest
+    {
 
         private static readonly int MAXNUMBER = 100;
         private static readonly string DIV5 = "buzz";
         private static readonly string DIV3 = "fizz";
-        //private static readonly int MOD1 = 3;
-        //private static readonly int MOD2 = 5;
+
 
         [ClassInitialize()]
-        public static void PrintNumbersInitialize(TestContext testContext) {
+        public static void PrintNumbersInitialize(TestContext testContext)
+        {
 
         }
 
         [TestInitialize]
-        public void PrintNumbersTestInitialize() {
+        public void PrintNumbersTestInitialize()
+        {
 
         }
 
         [TestMethod]
-        public void EmptyConstructorTest() {
-            PrintNumbers pn = new PrintNumbers();
+        public void EmptyConstructorTest()
+        {
+            IPrintNumbers pn = new PrintNumbers();
             Assert.IsNotNull(pn.Data);
             Assert.IsTrue(pn.Data[0].UpperBound == MAXNUMBER);
             Assert.IsTrue(pn.Data[0].Div3Msg == DIV3);
@@ -38,9 +41,10 @@ namespace NubmerPrintTest {
         }
 
         [TestMethod]
-        public void UpperBoundConstructorTest() {
+        public void UpperBoundConstructorTest()
+        {
             int test = 5;
-            PrintNumbers pn = new PrintNumbers(5);
+            IPrintNumbers pn = new PrintNumbers(5);
             Assert.IsNotNull(pn.Data);
             Assert.IsTrue(pn.Data[0].UpperBound == test);
             Assert.IsTrue(pn.Data[0].Div3Msg == DIV3);
@@ -48,12 +52,13 @@ namespace NubmerPrintTest {
         }
 
         [TestMethod]
-        public void SimpleTypeConstructorTest() {
+        public void SimpleTypeConstructorTest()
+        {
             int upperTest = 5;
             string div3Msg = "divisibleby3";
             string div5Msg = "divisibleby5";
 
-            PrintNumbers pn = new PrintNumbers(upperTest, div3Msg, div5Msg);
+            IPrintNumbers pn = new PrintNumbers(upperTest, div3Msg, div5Msg);
             Assert.IsNotNull(pn.Data);
             Assert.IsTrue(pn.Data[0].UpperBound == upperTest);
             Assert.IsTrue(pn.Data[0].Div3Msg.CompareTo(div3Msg) == 0);
@@ -61,20 +66,22 @@ namespace NubmerPrintTest {
         }
 
         [TestMethod]
-        public void INumberPrintObjectSingleConstructorTest() {
+        public void INumberPrintObjectSingleConstructorTest()
+        {
 
             int upperTest = 11;
             string div3Msg = "3msg";
             string div5Msg = "5msg";
 
             List<INumberPrintObject> testList = new List<INumberPrintObject>();
-            testList.Add(new TestINumberPrintObject() {
+            testList.Add(new TestINumberPrintObject()
+            {
                 UpperBound = upperTest,
                 Div3Msg = div3Msg,
                 Div5Msg = div5Msg
             });
 
-            PrintNumbers pn = new PrintNumbers(testList);
+            IPrintNumbers pn = new PrintNumbers(testList);
 
             Assert.IsNotNull(pn.Data);
             Assert.IsTrue(pn.Data[0].UpperBound == upperTest);
@@ -83,7 +90,8 @@ namespace NubmerPrintTest {
         }
 
         [TestMethod]
-        public void INumberPrintObjectMultiConstructorTest() {
+        public void INumberPrintObjectMultiConstructorTest()
+        {
 
             int upperTest = 20;
             string div3Msg = "msg3";
@@ -94,19 +102,21 @@ namespace NubmerPrintTest {
             string div5Msg2 = "5msg5";
 
             List<INumberPrintObject> testList = new List<INumberPrintObject>();
-            testList.Add(new TestINumberPrintObject() {
+            testList.Add(new TestINumberPrintObject()
+            {
                 UpperBound = upperTest,
                 Div3Msg = div3Msg,
                 Div5Msg = div5Msg
             });
 
-            testList.Add(new TestINumberPrintObject() {
+            testList.Add(new TestINumberPrintObject()
+            {
                 UpperBound = upperTest2,
                 Div3Msg = div3Msg2,
                 Div5Msg = div5Msg2
             });
 
-            PrintNumbers pn = new PrintNumbers(testList);
+            IPrintNumbers pn = new PrintNumbers(testList);
 
             Assert.IsNotNull(pn.Data);
             Assert.IsTrue(pn.Data[0].UpperBound == upperTest);
@@ -118,29 +128,90 @@ namespace NubmerPrintTest {
         }
 
         [TestMethod]
-        public void GetDatatTest() {
+        public void GetDatatTest()
+        {
             int upperTest = 20;
             string div3Msg = "3msg";
             string div5Msg = "5msg";
 
             List<INumberPrintObject> testList = new List<INumberPrintObject>();
-            testList.Add(new TestINumberPrintObject() {
+            testList.Add(new TestINumberPrintObject()
+            {
                 UpperBound = upperTest,
                 Div3Msg = div3Msg,
                 Div5Msg = div5Msg
             });
 
             //should hit one of all cases as far as printing out msgs is concerned
-            List<object> testData = new List<object>{1,2,"3msg",4,"5msg","3msg",7,8,"3msg","5msg",11,"3msg",13,14,"3msg5msg",16,17,"3msg",19,"5msg"};
+            List<object> testData = new List<object> { 1, 2, "3msg", 4, "5msg", "3msg", 7, 8, "3msg", "5msg", 11, "3msg", 13, 14, "3msg5msg", 16, 17, "3msg", 19, "5msg" };
 
-            PrintNumbers pn = new PrintNumbers(testList);
+            IPrintNumbers pn = new PrintNumbers(testList);
             var test = pn.GetDataObject();
             Assert.IsTrue(Enumerable.SequenceEqual(testData, testList[0].Data));
-            
+
+        }
+
+        [TestMethod]
+        public void GetJsonDatatTest()
+        {
+            int upperTest = 5;
+            string div3Msg = "3msg";
+            string div5Msg = "5msg";
+
+            List<INumberPrintObject> testList = new List<INumberPrintObject>();
+            testList.Add(new TestINumberPrintObject()
+            {
+                UpperBound = upperTest,
+                Div3Msg = div3Msg,
+                Div5Msg = div5Msg
+            });
+
+            //just to test some simple json
+            string testData = new string("[{\"UpperBound\":5,\"div3Msg\":\"3msg\",\"div5Msg\":\"5msg\",\"Data\":[1,2,\"3msg\",4,\"5msg\"]}]".ToCharArray());
+
+            IPrintNumbers pn = new PrintNumbers(testList);
+            var test = pn.GetDataObjectJson();
+            Assert.IsTrue(testData.CompareTo(test) == 0);
+
+        }
+
+        [TestMethod]
+        public void BadDataTest()
+        {
+            int upperTest = 5;
+            string div3Msg = "3msg";
+            string div5Msg = "5msg";
+
+            List<INumberPrintObject> testList = new List<INumberPrintObject>();
+            IPrintNumbers pn = new PrintNumbers(testList);
+            var test = pn.GetDataObject();
+            Assert.IsTrue(1==1);
+   
+            testList.Add(new TestINumberPrintObject()
+            {
+                Div3Msg = div3Msg,
+                Div5Msg = div5Msg
+            });
+
+            pn.Data = testList;
+            test = pn.GetDataObject();
+            Assert.IsTrue(1 == 1);
+
+            testList.Clear();
+            testList.Add(new TestINumberPrintObject()
+            {
+                UpperBound = upperTest,                
+                Div5Msg = div5Msg
+            });
+
+            pn.Data = testList;
+            test = pn.GetDataObject();
+            Assert.IsTrue(1 == 1);
         }
     }
 
-     class TestINumberPrintObject : INumberPrintObject {
+    class TestINumberPrintObject : INumberPrintObject
+    {
         private int upperBound;
         private string div3Msg;
         private string div5Msg;
@@ -152,7 +223,8 @@ namespace NubmerPrintTest {
         public IList<object> Data { get { return this.returnData; } set { this.returnData = value; } }
 
         [SecurityPermission(SecurityAction.Demand, SerializationFormatter = true)]
-        protected virtual void GetObjectData(SerializationInfo info, StreamingContext context) {
+        protected virtual void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
             info.AddValue("UpperBound", upperBound);
             info.AddValue("div3Msg", div3Msg);
             info.AddValue("div5Msg", div5Msg);
@@ -160,7 +232,8 @@ namespace NubmerPrintTest {
         }
 
         [SecurityPermission(SecurityAction.LinkDemand, Flags = SecurityPermissionFlag.SerializationFormatter)]
-        void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context) {
+        void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+        {
             if (info == null)
                 throw new ArgumentNullException("info");
 
